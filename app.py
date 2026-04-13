@@ -68,18 +68,10 @@ ACCIONES_KARDEX = [
     "resetear"
 ]
 
-# -------- COntexto inicializacion --------
-with app.app_context():
+def seed_data():
     try:
-        db.session.execute(text("SELECT 1"))
-        print("✅ Conexión OK")
-
-        # 🔥 CREAR TABLAS PRIMERO
-        db.create_all()
-
-        # 🔥 RECIÉN DESPUÉS CONSULTAS
+        # -------- ROLE --------
         role_admin = Role.query.filter_by(name="admin").first()
-
         if not role_admin:
             role_admin = Role(name="admin")
             db.session.add(role_admin)
@@ -87,7 +79,6 @@ with app.app_context():
 
         # -------- ADMIN --------
         admin = User.query.filter_by(username="admin").first()
-
         if not admin:
             admin = User(
                 username="admin",
@@ -98,65 +89,11 @@ with app.app_context():
             db.session.add(admin)
             db.session.commit()
 
-        # Asignar rol
         if role_admin not in admin.roles:
             admin.roles.append(role_admin)
             db.session.commit()
 
-        # -------- MODULE --------
-        mod = Module.query.filter_by(name="usuarios").first()
-
-        if not mod:
-            mod = Module(name="usuarios")
-            db.session.add(mod)
-            db.session.commit()
-
-        # -------- PERMISSIONS --------
-        acciones = ["ver", "crear", "editar", "eliminar"]
-
-        for acc in acciones:
-            perm = Permission.query.filter_by(module_id=mod.id, action=acc).first()
-            if not perm:
-                perm = Permission(module_id=mod.id, action=acc)
-                db.session.add(perm)
-
-        db.session.commit()
-
-        # -------- ASIGNAR PERMISOS --------
-        for perm in Permission.query.all():
-            if perm not in role_admin.permissions:
-                role_admin.permissions.append(perm)
-
-        db.session.commit()
-
-
-        # -------- MODULE ROLES --------
-        mod_roles = Module.query.filter_by(name="roles").first()
-
-        if not mod_roles:
-            mod_roles = Module(name="roles")
-            db.session.add(mod_roles)
-            db.session.commit()
-
-        acciones = ["ver", "crear", "editar", "eliminar"]
-
-        for acc in acciones:
-            perm = Permission.query.filter_by(module_id=mod_roles.id, action=acc).first()
-            if not perm:
-                perm = Permission(module_id=mod_roles.id, action=acc)
-                db.session.add(perm)
-
-        db.session.commit()
-
-        # asignar a admin
-        for perm in Permission.query.filter_by(module_id=mod_roles.id).all():
-            if perm not in role_admin.permissions:
-                role_admin.permissions.append(perm)
-
-        db.session.commit()
-
-
-
+        # -------- MODULOS + PERMISOS --------
         for nombre_modulo in MODULOS:
             mod = Module.query.filter_by(name=nombre_modulo).first()
 
@@ -174,19 +111,36 @@ with app.app_context():
                 ).first()
 
                 if not perm:
-                    db.session.add(
-                        Permission(
-                            module_id=mod.id,
-                            action=acc
-                        )
-                    )
+                    db.session.add(Permission(module_id=mod.id, action=acc))
 
         db.session.commit()
 
-    except Exception as e:
-        print("❌ Error conexión:", e)
+        # -------- ASIGNAR PERMISOS --------
+        for perm in Permission.query.all():
+            if perm not in role_admin.permissions:
+                role_admin.permissions.append(perm)
 
-   
+        db.session.commit()
+
+        print("✅ Datos iniciales OK")
+
+    except Exception as e:
+        print("⚠️ Error en seed:", e)
+
+
+# -------- CONTEXTO INICIALIZACION --------
+with app.app_context():
+    try:
+        print("🚀 Iniciando aplicación...")
+
+        # ✅ SOLO crear tablas (SEGURO)
+        db.create_all()
+        if os.getenv("RENDER") == "true":
+            seed_data()
+            print("✅ Tablas verificadas/creadas")
+
+    except Exception as e:
+        print("❌ Error al iniciar BD:", e)   
 #-- Funciones globales--
 def validar_texto(valor, campo, min_len=3, max_len=150):
     if not valor:
