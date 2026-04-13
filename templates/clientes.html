@@ -69,12 +69,6 @@
                         </td>
                     </tr>
 
-                    {% else %}
-                    <tr>
-                        <td colspan="6" class="text-center text-muted py-4">
-                            No hay clientes
-                        </td>
-                    </tr>
                     {% endfor %}
                 </tbody>
 
@@ -179,5 +173,14 @@
     </div>
 </div>
 {% endif %}
+
+<script>
+$('.datatable').DataTable({
+    language: {
+        emptyTable: "No hay clientes"
+    }
+});
+
+</script>
 
 {% endblock %}

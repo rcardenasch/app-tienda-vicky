@@ -198,3 +198,9 @@ modalNuevo.addEventListener("hidden.bs.modal", function () {
     // limpiar último código leído
     ultimoCodigo = null;
 });
+
+$('.datatable').DataTable({
+    language: {
+        emptyTable: "No hay productos"
+    }
+});
