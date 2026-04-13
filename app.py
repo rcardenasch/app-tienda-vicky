@@ -70,14 +70,13 @@ ACCIONES_KARDEX = [
 # -------- COntexto inicializacion --------
 with app.app_context():
     try:
-        db.engine.connect()
-        print("✅ Conexión a PostgreSQL OK")
+        db.session.execute("SELECT 1")
+        print("✅ Conexión OK")
+        
     except Exception as e:
         print("❌ Error conexión:", e)
-        
-    print("CREANDO TABLAS...")
-    db.create_all()
 
+    # db.create_all()
     # -------- ROLE --------
     role_admin = Role.query.filter_by(name="admin").first()
 
