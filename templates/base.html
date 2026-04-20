@@ -33,55 +33,55 @@
             <i class="bi bi-hospital"></i> Ferretería
         </h4>
 
-        <a href="{{ url_for('index') }}" class="{% if request.path == url_for('index') %}active{% endif %}">
+        <a href="{{ url_for('index') }}" class="{% if request.endpoint == 'index' %}active{% endif %}">
             <i class="bi bi-speedometer2"></i> Dashboard
         </a>
 
         <small class="px-3 text-secondary">Maestro</small>
 
-        <a href="{{ url_for('usuarios_list') }}" class="{% if request.path.startswith('/usuarios') %}active{% endif %}">
+        <a href="{{ url_for('usuarios_list') }}" class="{% if request.endpoint.startswith('usuarios') %}active{% endif %}">
             <i class="bi bi-people"></i> Usuarios
         </a>
 
-        <a href="{{ url_for('roles_list') }}" class="{% if request.path.startswith('/roles') %}active{% endif %}">
+        <a href="{{ url_for('roles_list') }}" class="{% if request.endpoint.startswith('roles') %}active{% endif %}">
             <i class="bi bi-shield-lock"></i> Roles
         </a>
 
         <small class="px-3 text-secondary">Inventario</small>
-        <a href="{{ url_for('productos_list') }}" class="{% if request.path.startswith('/productos') %}active{% endif %}">
+        <a href="{{ url_for('productos_list') }}" class="{% if request.endpoint.startswith('productos') %}active{% endif %}">
             <i class="bi bi-box-seam"></i> Productos
         </a>
 
 
-        <a href="{{ url_for('categorias_list') }}" class="{% if request.path.startswith('/categorias') %}active{% endif %}">
+        <a href="{{ url_for('categorias_list') }}" class="{% if request.endpoint.startswith('categorias') %}active{% endif %}">
             <i class="bi bi-tags"></i> Categorías
         </a>
 
         <small class="px-3 text-secondary">Ventas</small>
 
-        <a href="{{ url_for('ventas_list') }}" class="{% if request.path.startswith('/ventas') %}active{% endif %}">
+        <a href="{{ url_for('ventas_list') }}" class="{% if request.endpoint.startswith('ventas') %}active{% endif %}">
             <i class="bi bi-cart"></i> Ventas
         </a>
 
-        <a href="{{ url_for('clientes_list') }}" class="{% if request.path.startswith('/clientes') %}active{% endif %}">
+        <a href="{{ url_for('clientes_list') }}" class="{% if request.endpoint.startswith('clientes') %}active{% endif %}">
             <i class="bi bi-person"></i> Clientes
         </a>
         <small class="px-3 text-secondary">Compras</small>
 
-        <a href="{{ url_for('compras_list') }}" class="{% if request.path.startswith('/compras') %}active{% endif %}">
+        <a href="{{ url_for('compras_list') }}" class="{% if request.endpoint.startswith('compras') %}active{% endif %}">
             <i class="bi bi-truck"></i> Compras
         </a>
 
-        <a href="{{ url_for('proveedores_list') }}" class="{% if request.path.startswith('/proveedores') %}active{% endif %}">
+        <a href="{{ url_for('proveedores_list') }}" class="{% if request.endpoint.startswith('proveedores') %}active{% endif %}">
             <i class="bi bi-building"></i> Proveedores
         </a>
         <small class="px-3 text-secondary">Kardex</small>
 
-        <a href="{{ url_for('kardex_index') }}" class="{% if request.path.startswith('/kardex_index') %}active{% endif %}">
+        <a href="{{ url_for('kardex_index') }}" class="{% if request.endpoint == 'kardex_index' %}active{% endif %}">
             <i class="bi bi-truck"></i> Kardex
         </a>
 
-        <a href="{{ url_for('kardex_movimientos') }}" class="{% if request.path.startswith('/kardex_movimientos') %}active{% endif %}">
+        <a href="{{ url_for('kardex_movimientos') }}" class="{% if request.endpoint == 'kardex_movimientos' %}active{% endif %}">
             <i class="bi bi-building"></i> Movimientos
         </a>
     </div>
