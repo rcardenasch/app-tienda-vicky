@@ -628,3 +628,16 @@ body.dark-mode .dataTables_filter input:focus {
     position: relative;
     height: 300px;
 }
+.sidebar a.active {
+    background: linear-gradient(90deg, rgba(37,99,235,.25), transparent);
+    border-left: 4px solid var(--primary);
+    box-shadow: inset 0 0 10px rgba(37,99,235,.25);
+}
+body.dark-mode .sidebar a.active {
+    background: rgba(59,130,246,0.25);
+    border-left: 4px solid #3b82f6;
+}
+
+.sidebar a:active {
+    transform: scale(0.97);
+}
