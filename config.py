@@ -16,7 +16,7 @@ class Config:
 
     SQLALCHEMY_DATABASE_URI = os.getenv(
         "DATABASE_URL",
-        "postgresql+psycopg2://postgres:123456@localhost:5433/App_BD"
+        "postgresql+psycopg2://postgres:1234@localhost:5432/App_BD" # ingresa parametros de acceso a bd local
     )
 
     SQLALCHEMY_TRACK_MODIFICATIONS = False
