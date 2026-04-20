@@ -33,7 +33,7 @@
             <i class="bi bi-hospital"></i> Ferretería
         </h4>
 
-        <a href="{{ url_for('index') }}" class="{% if request.endpoint == 'index' %}active{% endif %}">
+        <a href="{{ url_for('index') }}" class="{% if request.endpoint.startswith('dashboard') %}active{% endif %}">
             <i class="bi bi-speedometer2"></i> Dashboard
         </a>
 
