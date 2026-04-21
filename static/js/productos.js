@@ -129,7 +129,7 @@ window.iniciarScanner = function () {
             }
 
             // llenar buscador visualmente
-            let inputBuscar = document.getElementById("buscar");
+            let inputBuscar = document.getElementById("codigo_barras");
             if (inputBuscar) {
                 inputBuscar.value = codigo;
             }
