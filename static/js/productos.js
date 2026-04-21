@@ -84,7 +84,8 @@ function buscarProducto(codigo) {
                 mostrarMensaje("✅ Producto nuevo, puedes registrarlo", "success");
             }
 
-            inputNombre.focus();
+            //inputNombre.focus();
+            document.querySelector("input[name='nombre']").focus();
 
         });
 }

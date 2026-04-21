@@ -27,7 +27,10 @@ document.addEventListener("DOMContentLoaded", function () {
         scanner.start(
             { facingMode: "environment" },
             {
-                fps: 20, qrbox: { width: 300, height: 150 },
+                fps: 20, qrbox: { width: 300, height: 150 }, disableFlip: false,
+                experimentalFeatures: {
+                    useBarCodeDetectorIfSupported: true
+                },
                 formatsToSupport: [
                     Html5QrcodeSupportedFormats.EAN_13,
                     Html5QrcodeSupportedFormats.EAN_8,
@@ -75,7 +78,12 @@ document.addEventListener("DOMContentLoaded", function () {
             scanner.start(
                 { facingMode: usandoTrasera ? "environment" : "user" },
                 {
-                    fps: 10, qrbox: 250, formatsToSupport: [
+                    fps: 20, qrbox: { width: 300, height: 150 },
+                    aspectRatio: 1.777, disableFlip: false,
+                    experimentalFeatures: {
+                        useBarCodeDetectorIfSupported: true
+                    },
+                    formatsToSupport: [
                         Html5QrcodeSupportedFormats.EAN_13,
                         Html5QrcodeSupportedFormats.EAN_8,
                         Html5QrcodeSupportedFormats.CODE_128,
