@@ -81,8 +81,8 @@ function buscarProducto(codigo) {
                 }
                 alert("⚠️ Producto ya existe");
 
-                document.querySelector("input[name='nombre']").value = data.nombre;
-
+                inputCodigo.value = "";
+                
             } else {
                 let estado = document.getElementById("mensajeProducto");
                 if (estado) {
@@ -91,27 +91,14 @@ function buscarProducto(codigo) {
                 //alert("✅ Producto nuevo");
                 // 🟢 AQUÍ TAMBIÉN
                 alert("✅ Producto nuevo, puedes registrarlo", "success");
+                //inputNombre.focus();
+                document.querySelector("input[name='nombre']").focus();
             }
 
-            //inputNombre.focus();
-            document.querySelector("input[name='nombre']").focus();
+
 
         });
 }
-
-function mostrarMensaje(texto, tipo) {
-
-    const div = document.getElementById("mensajeProducto");
-
-    div.className = `alert alert-${tipo}`;
-    div.innerText = texto;
-    div.classList.remove("d-none");
-
-    setTimeout(() => {
-        div.classList.add("d-none");
-    }, 2000);
-}
-
 
 var modal = document.getElementById('modalNuevo');
 modal.addEventListener('shown.bs.modal', function () {
