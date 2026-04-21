@@ -50,6 +50,16 @@ document.addEventListener("DOMContentLoaded", function () {
         inputCodigo.focus();
     });
 
+    inputCodigo.addEventListener("input", function () {
+
+    let codigo = inputCodigo.value.trim();
+
+    if (codigo.length >= 8) {
+        buscarProducto(codigo);
+    }
+
+});
+
 
 });
 
