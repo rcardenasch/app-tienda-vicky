@@ -103,11 +103,6 @@ function mostrarMensaje(texto, tipo) {
     }, 2000);
 }
 
-document.getElementById("codigo_barras").addEventListener("keydown", function (e) {
-    if (e.key === "Enter") {
-        document.getElementById("beep").play();
-    }
-});
 
 var modal = document.getElementById('modalNuevo');
 modal.addEventListener('shown.bs.modal', function () {
