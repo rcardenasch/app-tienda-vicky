@@ -52,13 +52,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
     inputCodigo.addEventListener("input", function () {
 
-    let codigo = inputCodigo.value.trim();
+        let codigo = inputCodigo.value.trim();
 
-    if (codigo.length >= 8) {
-        buscarProducto(codigo);
-    }
+        if (codigo.length >= 8) {
+            buscarProducto(codigo);
+        }
 
-});
+    });
 
 
 });
@@ -73,15 +73,24 @@ function buscarProducto(codigo) {
         .then(res => res.json())
         .then(data => {
 
-           if (data.existe) {
+            if (data.existe) {
                 // 🔴 AQUÍ LLAMAS
-                mostrarMensaje("⚠️ Producto ya existe", "warning");
+                let estado = document.getElementById("mensajeProducto");
+                if (estado) {
+                    estado.innerText = "⚠️ Producto ya existe";
+                }
+                alert("⚠️ Producto ya existe");
 
                 document.querySelector("input[name='nombre']").value = data.nombre;
 
             } else {
+                let estado = document.getElementById("mensajeProducto");
+                if (estado) {
+                    estado.innerText = "✅ Producto nuevo";
+                }
+                //alert("✅ Producto nuevo");
                 // 🟢 AQUÍ TAMBIÉN
-                mostrarMensaje("✅ Producto nuevo, puedes registrarlo", "success");
+                alert("✅ Producto nuevo, puedes registrarlo", "success");
             }
 
             //inputNombre.focus();
