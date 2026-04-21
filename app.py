@@ -1010,17 +1010,21 @@ def crear_cliente_rapido():
             "error": str(e)
         })
     
+from pytz import timezone
+
 @app.route("/api/ventas_recientes")
 def ventas_recientes():
 
     ventas = Venta.query.order_by(Venta.id.desc()).limit(10).all()
+    LIMA=timezone("America/Lima")
+    fecha_lima = ventas.fecha.astimezone(LIMA)
 
     return jsonify([
         {
             "id": v.id,
             "total": v.total,
-            "fecha": v.fecha.strftime("%d/%m/%Y"),  # 🔥 fecha
-            "hora": v.fecha.strftime("%H:%M:%S"),   # 🔥 hora
+            "fecha": v.fecha_lima.strftime("%d/%m/%Y"),  # 🔥 fecha
+            "hora": v.fecha_lima.strftime("%H:%M:%S"),   # 🔥 hora
             "cliente": v.cliente.nombre if v.cliente else None,
             "tipo_pago": "Efectivo"  # 🔥 o desde DB si lo tienes
         }
