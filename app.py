@@ -1015,21 +1015,34 @@ from pytz import timezone
 @app.route("/api/ventas_recientes")
 def ventas_recientes():
 
-    ventas = Venta.query.order_by(Venta.id.desc()).limit(10).all()
     LIMA=timezone("America/Lima")
-    fecha_lima = ventas.fecha.astimezone(LIMA)
+    UTC = timezone("UTC")
 
-    return jsonify([
-        {
+    ventas = Venta.query.order_by(Venta.id.desc()).limit(10).all() 
+
+    data = []
+
+    for v in ventas:
+
+        # 🔥 Convertir a zona Lima
+        fecha_utc = v.fecha
+
+        # si viene naive (sin zona)
+        fecha_utc = UTC.localize(fecha_utc)
+
+        fecha_lima = fecha_utc.astimezone(LIMA)
+
+        data.append({
             "id": v.id,
             "total": v.total,
-            "fecha": v.fecha_lima.strftime("%d/%m/%Y"),  # 🔥 fecha
-            "hora": v.fecha_lima.strftime("%H:%M:%S"),   # 🔥 hora
+            "fecha": fecha_lima.strftime("%d/%m/%Y"),
+            "hora": fecha_lima.strftime("%H:%M:%S"),
             "cliente": v.cliente.nombre if v.cliente else None,
-            "tipo_pago": "Efectivo"  # 🔥 o desde DB si lo tienes
-        }
-        for v in ventas
-    ])
+            "tipo_pago": "Efectivo"
+        })
+
+    return jsonify(data)
+
 
 # =========================
 # CRUD COMPRAS
