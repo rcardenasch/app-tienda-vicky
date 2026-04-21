@@ -1016,7 +1016,6 @@ from pytz import timezone
 def ventas_recientes():
 
     LIMA=timezone("America/Lima")
-    UTC = timezone("UTC")
 
     ventas = Venta.query.order_by(Venta.id.desc()).limit(10).all() 
 
@@ -1024,19 +1023,13 @@ def ventas_recientes():
 
     for v in ventas:
 
-        # 🔥 Convertir a zona Lima
-        fecha_utc = v.fecha
-
-        # si viene naive (sin zona)
-        fecha_utc = UTC.localize(fecha_utc)
-
-        fecha_lima = fecha_utc.astimezone(LIMA)
+        #fecha_lima = v.fecha.astimezone(LIMA)
 
         data.append({
             "id": v.id,
             "total": v.total,
-            "fecha": fecha_lima.strftime("%d/%m/%Y"),
-            "hora": fecha_lima.strftime("%H:%M:%S"),
+            "fecha": v.fecha.strftime("%d/%m/%Y"),
+            "hora": v.fecha.strftime("%H:%M:%S"),
             "cliente": v.cliente.nombre if v.cliente else None,
             "tipo_pago": "Efectivo"
         })
