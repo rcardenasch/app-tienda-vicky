@@ -72,6 +72,9 @@ function buscarProducto(codigo) {
     fetch(`/productos/buscar?codigo=${codigo}`)
         .then(res => res.json())
         .then(data => {
+            const inputCodigo = document.getElementById("codigo_barras");
+            const inputNombre = document.querySelector("input[name='nombre']");
+            const estado = document.getElementById("mensajeProducto");
 
             if (data.existe) {
                 // 🔴 AQUÍ LLAMAS
@@ -81,8 +84,15 @@ function buscarProducto(codigo) {
                 }
                 alert("⚠️ Producto ya existe");
 
+                // 🔴 LIMPIAR CÓDIGO
+                const inputCodigo = document.getElementById("codigo_barras");
                 inputCodigo.value = "";
-                
+
+                // 🔥 VOLVER A ENFOCAR (clave para seguir escaneando)
+                inputCodigo.focus();
+
+                return; // ⛔ corta aquí (importante)
+
             } else {
                 let estado = document.getElementById("mensajeProducto");
                 if (estado) {
@@ -91,8 +101,8 @@ function buscarProducto(codigo) {
                 //alert("✅ Producto nuevo");
                 // 🟢 AQUÍ TAMBIÉN
                 alert("✅ Producto nuevo, puedes registrarlo", "success");
-                //inputNombre.focus();
-                document.querySelector("input[name='nombre']").focus();
+                inputNombre.focus();
+
             }
 
 
@@ -151,12 +161,20 @@ window.iniciarScanner = function () {
             }
 
             // llenar buscador visualmente
-            let inputBuscar = document.getElementById("codigo_barras");
-            if (inputBuscar) {
-                inputBuscar.value = codigo;
+            let inputCodigo_barras = document.getElementById("codigo_barras");
+            if (inputCodigo_barras) {
+                inputCodigo_barras.value = codigo;
             }
 
             buscarProducto(codigo);
+
+            // 🔴 APAGAR CÁMARA AQUÍ
+            if (scanner) {
+                scanner.stop().then(() => {
+                    scanner.clear();
+                    scanner = null;
+                });
+            }
         }
     );
 };
@@ -185,8 +203,14 @@ function cambiarCamara() {
                 ]
             },
             codigo => {
-                scanner.stop();
                 buscarProducto(codigo);
+                // 🔴 APAGAR CÁMARA AQUÍ
+                if (scanner) {
+                    scanner.stop().then(() => {
+                        scanner.clear();
+                        scanner = null;
+                    });
+                }
             }
         );
     });

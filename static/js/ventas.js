@@ -65,6 +65,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
                 buscarProducto(codigo);
+
+                // 🔴 APAGAR CÁMARA AQUÍ
+                if (scanner) {
+                    scanner.stop().then(() => {
+                        scanner.clear();
+                        scanner = null;
+                    });
+                }
             }
         );
     };
@@ -100,6 +108,13 @@ document.addEventListener("DOMContentLoaded", function () {
                     if (inputBuscar) inputBuscar.value = codigo;
 
                     buscarProducto(codigo);
+                    // 🔴 APAGAR CÁMARA AQUÍ
+                    if (scanner) {
+                        scanner.stop().then(() => {
+                            scanner.clear();
+                            scanner = null;
+                        });
+                    }
                 }
             );
         });
