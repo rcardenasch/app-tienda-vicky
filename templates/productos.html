@@ -120,7 +120,14 @@
                 <div id="scannerEstado" class="text-muted small mt-2">
 
                 </div>
-
+                <!-- ALMACEN -->
+                <div>
+                    <select name="almacen_id" class="form-select" required>
+                        {% for a in almacenes %}
+                        <option value="{{ a.id }}">{{ a.nombre }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
                 <input name="codigo_barras" id="codigo_barras" placeholder="Escanea o escribe código"
                     class="form-control mb-2">
                 <div id="mensajeProducto" class="text-muted small mt-2"></div>

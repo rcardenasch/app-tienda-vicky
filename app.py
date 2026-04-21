@@ -511,7 +511,8 @@ def productos_list():
     return render_template(
         "productos.html",
         lista=Producto.query.all(),
-        categorias=Categoria.query.all()
+        categorias=Categoria.query.all(),
+        almacenes=Almacen.query.all()
     )
 
 @app.route("/productos/nuevo", methods=["POST"])
@@ -523,6 +524,7 @@ def productos_nuevo():
         nombre = request.form.get("nombre", "").strip()
         codigo = request.form.get("codigo_barras", "").strip()
         categoria_id = request.form.get("categoria_id")
+        almacen_id=request.form.get("almacen_id")
         precio_compra = request.form.get("precio_compra")
         precio_venta = request.form.get("precio_venta")
         stock = request.form.get("stock")
@@ -566,6 +568,41 @@ def productos_nuevo():
         )
 
         db.session.add(producto)
+        db.session.commit()
+
+        # 🔥 OBTENER ALMACÉN Seleccionado
+        almacen = Almacen.query.filter(Almacen.id.in_(almacen_id)).first()
+
+        if not almacen:
+            raise Exception("No existe almacén activo")
+
+        # =========================
+        # CREAR STOCK INICIAL
+        # =========================
+        stock_item = StockAlmacen(
+            producto_id=producto.id,
+            almacen_id=almacen.id,
+            stock=stock
+        )
+
+        db.session.add(stock_item)
+
+        # =========================
+        # KARDEX INICIAL
+        # =========================
+        movimiento = KardexMovimiento(
+            producto_id=producto.id,
+            almacen_id=almacen.id,
+            tipo_movimiento="INICIAL",
+            cantidad=stock,
+            stock_anterior=0,
+            stock_nuevo=stock,
+            costo_unitario=precio_compra,
+            usuario_id=current_user.id,
+            observacion="Stock inicial al crear producto"
+        )
+
+        db.session.add(movimiento)
         db.session.commit()
 
         flash("✅ Producto creado correctamente", "success")
