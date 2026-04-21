@@ -73,6 +73,19 @@ function buscarProducto(codigo) {
         });
 }
 
+function mostrarMensaje(texto, tipo) {
+
+    const div = document.getElementById("mensajeProducto");
+
+    div.className = `alert alert-${tipo}`;
+    div.innerText = texto;
+    div.classList.remove("d-none");
+
+    setTimeout(() => {
+        div.classList.add("d-none");
+    }, 2000);
+}
+
 document.getElementById("codigo_barras").addEventListener("keydown", function (e) {
     if (e.key === "Enter") {
         document.getElementById("beep").play();
