@@ -43,25 +43,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     });
 
-    function buscarProducto(codigo) {
-
-        // 🔊 Beep seguro
-        let beep = document.getElementById("beep");
-        if (beep) beep.play().catch(() => { });
-
-        fetch(`/productos/buscar?codigo=${codigo}`)
-            .then(res => res.json())
-            .then(data => {
-
-                if (data.existe) {
-                    alert("⚠️ Producto ya existe");
-                    inputNombre.value = data.nombre;
-                }
-
-                inputNombre.focus();
-
-            });
-    }
 
     // 🔥 Autofocus correcto al abrir modal
     const modal = document.getElementById('modalNuevo');
@@ -71,6 +52,26 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 });
+
+function buscarProducto(codigo) {
+
+    // 🔊 Beep seguro
+    let beep = document.getElementById("beep");
+    if (beep) beep.play().catch(() => { });
+
+    fetch(`/productos/buscar?codigo=${codigo}`)
+        .then(res => res.json())
+        .then(data => {
+
+            if (data.existe) {
+                alert("⚠️ Producto ya existe");
+                inputNombre.value = data.nombre;
+            }
+
+            inputNombre.focus();
+
+        });
+}
 
 document.getElementById("codigo_barras").addEventListener("keydown", function (e) {
     if (e.key === "Enter") {
