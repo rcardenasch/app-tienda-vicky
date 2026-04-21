@@ -514,7 +514,6 @@ def productos_list():
         categorias=Categoria.query.all(),
         almacenes=Almacen.query.all()
     )
-
 @app.route("/productos/nuevo", methods=["POST"])
 @login_required
 @permission_required("productos", "crear")
@@ -524,13 +523,14 @@ def productos_nuevo():
         nombre = request.form.get("nombre", "").strip()
         codigo = request.form.get("codigo_barras", "").strip()
         categoria_id = request.form.get("categoria_id")
-        almacen_id=request.form.get("almacen_id")
+        almacen_id = request.form.get("almacen_id")
         precio_compra = request.form.get("precio_compra")
         precio_venta = request.form.get("precio_venta")
         stock = request.form.get("stock")
 
-        # 🔥 VALIDACIONES MEJORADAS
-            
+        # =========================
+        # VALIDACIONES
+        # =========================
         if not codigo:
             flash("Debe ingresar o escanear un código", "danger")
             return redirect(url_for("productos_list"))
@@ -539,7 +539,6 @@ def productos_nuevo():
             flash("Debe ingresar nombre", "danger")
             return redirect(url_for("productos_list"))
 
-        # 🔥 VALIDACIÓN NUMÉRICA SEGURA
         try:
             precio_compra = float(precio_compra)
             precio_venta = float(precio_venta)
@@ -548,7 +547,6 @@ def productos_nuevo():
             flash("Valores numéricos inválidos", "danger")
             return redirect(url_for("productos_list"))
 
-        # 🔥 VALIDACIÓN ÚNICA MÁS EFICIENTE
         existente = Producto.query.filter(
             (Producto.codigo_barras == codigo) |
             (Producto.nombre == nombre)
@@ -558,6 +556,9 @@ def productos_nuevo():
             flash("Producto ya existe (nombre o código)", "warning")
             return redirect(url_for("productos_list"))
 
+        # =========================
+        # CREAR PRODUCTO (SIN COMMIT AÚN)
+        # =========================
         producto = Producto(
             nombre=nombre,
             codigo_barras=codigo,
@@ -568,23 +569,24 @@ def productos_nuevo():
         )
 
         db.session.add(producto)
-        db.session.commit()
-
-        # 🔥 OBTENER ALMACÉN Seleccionado
-        almacen = Almacen.query.filter(Almacen.id.in_(almacen_id)).first()
-
-        if not almacen:
-            raise Exception("No existe almacén activo")
+        db.session.flush()  # 🔥 SOLO PARA OBTENER ID
 
         # =========================
-        # CREAR STOCK INICIAL
+        # VALIDAR ALMACÉN
+        # =========================
+        almacen = Almacen.query.get(int(almacen_id))
+
+        if not almacen:
+            raise Exception("Almacén no válido")
+
+        # =========================
+        # STOCK INICIAL
         # =========================
         stock_item = StockAlmacen(
             producto_id=producto.id,
             almacen_id=almacen.id,
             stock=stock
         )
-
         db.session.add(stock_item)
 
         # =========================
@@ -601,8 +603,11 @@ def productos_nuevo():
             usuario_id=current_user.id,
             observacion="Stock inicial al crear producto"
         )
-
         db.session.add(movimiento)
+
+        # =========================
+        # COMMIT FINAL ÚNICO
+        # =========================
         db.session.commit()
 
         flash("✅ Producto creado correctamente", "success")
@@ -612,7 +617,6 @@ def productos_nuevo():
         flash(f"Error: {str(e)}", "danger")
 
     return redirect(url_for("productos_list"))
-
 
 @app.route("/productos/editar/<int:id>", methods=["POST"])
 @login_required
