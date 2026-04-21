@@ -63,9 +63,15 @@ function buscarProducto(codigo) {
         .then(res => res.json())
         .then(data => {
 
-            if (data.existe) {
-                alert("⚠️ Producto ya existe");
-                inputNombre.value = data.nombre;
+           if (data.existe) {
+                // 🔴 AQUÍ LLAMAS
+                mostrarMensaje("⚠️ Producto ya existe", "warning");
+
+                document.querySelector("input[name='nombre']").value = data.nombre;
+
+            } else {
+                // 🟢 AQUÍ TAMBIÉN
+                mostrarMensaje("✅ Producto nuevo, puedes registrarlo", "success");
             }
 
             inputNombre.focus();
