@@ -77,7 +77,7 @@ def seed_data():
                 email="admin@test.com",
                 full_name="Administrador"
             )
-            admin.set_password("admin")
+            admin.set_password("43737510")
             db.session.add(admin)
             db.session.commit()
 
@@ -1774,4 +1774,4 @@ def dashboard():
 
 
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=5056, debug=True)
+    app.run(host="127.0.0.1", port=5057, debug=True)
