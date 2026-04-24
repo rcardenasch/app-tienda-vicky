@@ -92,74 +92,114 @@
         <audio id="beep" src="https://www.soundjay.com/buttons/beep-07.wav" preload="auto"></audio>
     </tbody>
 </table>
-
 <!-- NUEVO -->
-<div class="modal fade" id="modalNuevo">
-    <div class="modal-dialog">
-        <form method="POST" enctype="multipart/form-data" action="{{ url_for('productos_nuevo') }}">
+<div class="modal fade" id="modalNuevo" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered"> <!-- Centrado para mejor vista -->
+        <form method="POST" enctype="multipart/form-data" action="{{ url_for('productos_nuevo') }}" class="modal-content border-0 shadow">
+            
+            <div class="modal-header bg-light">
+                <h5 class="modal-title d-flex align-items-center">
+                    <i class="bi bi-box-seam me-2 text-primary"></i> Nuevo Producto
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
 
-            <div class="modal-content p-3">
-                <div class="modal-header">
-                    <h5 class="modal-title">Nuevo Producto</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            <div class="modal-body">
+                <!-- SECCIÓN ESCÁNER -->
+                <div class="mb-3 bg-dark rounded p-2 text-center position-relative overflow-hidden" style="min-height: 50px;">
+                    <div id="reader" class="w-100"></div>
+                    <div class="d-flex justify-content-center gap-2 mt-2">
+                        <button type="button" class="btn btn-sm btn-outline-light" onclick="iniciarScanner()">
+                            <i class="bi bi-upc-scan"></i> Escanear
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-light" onclick="cambiarCamara()">
+                            <i class="bi bi-camera-reversing"></i>
+                        </button>
+                    </div>
+                    <div id="scannerEstado" class="text-white-50 small mt-1"></div>
                 </div>
 
-                <div class="mb-2 d-flex gap-2">
-
-                    <button type="button" class="btn btn-dark" onclick="iniciarScanner()">
-                        <i class="bi bi-upc-scan"></i> Escanear
-                    </button>
-
-                    <button type="button" class="btn btn-secondary" onclick="cambiarCamara()">
-                        <i class="bi bi-arrow-clockwise"></i>
-                    </button>
-
+                <!-- CÓDIGO DE BARRAS -->
+                <div class="mb-3">
+                    <label class="form-label small fw-bold text-muted">Código de Barras</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-upc"></i></span>
+                        <input name="codigo_barras" id="codigo_barras" placeholder="Escriba o escanee..." class="form-control">
+                    </div>
+                    <div id="mensajeProducto" class="form-text text-info"></div>
                 </div>
 
-                <div id="reader"></div>
-                <div id="scannerEstado" class="text-muted small mt-2">
-
+                <!-- NOMBRE Y ALMACÉN -->
+                <div class="row g-2 mb-3">
+                    <div class="col-md-7">
+                        <label class="form-label small fw-bold text-muted">Nombre del Producto</label>
+                        <input name="nombre" placeholder="Ej. Leche Gloria" class="form-control" required>
+                    </div>
+                    <div class="col-md-5">
+                        <label class="form-label small fw-bold text-muted">Almacén</label>
+                        <select name="almacen_id" class="form-select" required>
+                            {% for a in almacenes %}
+                            <option value="{{ a.id }}">{{ a.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
                 </div>
-                <!-- ALMACEN -->
-                <div>
-                    <select name="almacen_id" class="form-select" required>
-                        {% for a in almacenes %}
-                        <option value="{{ a.id }}">{{ a.nombre }}</option>
+
+                <!-- CATEGORÍA -->
+                <div class="mb-3">
+                    <label class="form-label small fw-bold text-muted">Categoría</label>
+                    <select name="categoria_id" class="form-select">
+                        <option value="">Seleccione categoría...</option>
+                        {% for c in categorias %}
+                            {% if c.parent_id %}
+                            <option value="{{c.id}}">{{c.parent.nombre}} → {{c.nombre}}</option>
+                            {% endif %}
                         {% endfor %}
                     </select>
                 </div>
-                <input name="codigo_barras" id="codigo_barras" placeholder="Escanea o escribe código"
-                    class="form-control mb-2">
-                <div id="mensajeProducto" class="text-muted small mt-2"></div>
-                <input name="nombre" placeholder="Nombre" class="form-control mb-2">
-                <select name="categoria_id" class="form-control mb-2">
-                    <option value="">Seleccione categoría</option>
 
-                    {% for c in categorias %}
-                    {% if c.parent_id %}
-                    <option value="{{c.id}}">
-                        {{c.parent.nombre}} → {{c.nombre}}
-                    </option>
-                    {% endif %}
-                    {% endfor %}
-                </select>
-                <!-- Agregado step="0.01" para permitir decimales en precios -->
-                <input name="precio_compra" type="number" step="0.01" placeholder="Precio compra"
-                    class="form-control mb-2">
-                <input name="precio_venta" type="number" step="0.01" placeholder="Precio venta"
-                    class="form-control mb-2">
+                <!-- PRECIOS Y STOCK (En una sola fila) -->
+                <div class="row g-2 mb-3">
+                    <div class="col-4">
+                        <label class="form-label small fw-bold text-muted text-truncate">P. Compra</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light">$</span>
+                            <input name="precio_compra" type="number" step="0.01" class="form-control px-2" placeholder="0.00">
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <label class="form-label small fw-bold text-muted text-truncate">P. Venta</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light">$</span>
+                            <input name="precio_venta" type="number" step="0.01" class="form-control px-2" placeholder="0.00">
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <label class="form-label small fw-bold text-muted">Stock</label>
+                        <input name="stock" type="number" step="any" class="form-control" placeholder="0">
+                    </div>
+                </div>
 
-                <!-- Corregido type="number" y agregado step para stock decimal -->
-                <input name="stock" type="number" step="any" placeholder="Stock" class="form-control mb-2">
+                <!-- IMAGEN -->
+                <div class="mb-3">
+                    <label class="form-label small fw-bold text-muted text-truncate">Imagen del Producto</label>
+                    <div class="input-group input-group-sm">
+                        <input type="file" name="imagen" class="form-control" id="inputGroupFile01">
+                        <label class="input-group-text" for="inputGroupFile01"><i class="bi bi-image"></i></label>
+                    </div>
+                </div>
+            </div>
 
-                <input type="file" name="imagen" class="form-control mb-2">
-
-                <button class="btn btn-success">Guardar</button>
-
+            <div class="modal-footer bg-light border-top-0">
+                <button type="button" class="btn btn-link text-secondary text-decoration-none" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn btn-success px-4">
+                    <i class="bi bi-check-circle me-1"></i> Guardar Producto
+                </button>
             </div>
         </form>
     </div>
 </div>
+
 
 <script src="https://unpkg.com/html5-qrcode"></script>
 <script src="{{ url_for('static', filename='js/productos.js') }}"></script>

@@ -865,6 +865,7 @@ def ventas_nuevo():
             cliente_id=int(cliente_id) if cliente_id else None,
             usuario_id=current_user.id,
             tipo_comprobante=tipo_comprobante,
+            almacen_id=almacen_id,
             total=0
         )
 
