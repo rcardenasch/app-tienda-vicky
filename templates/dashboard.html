@@ -21,9 +21,16 @@
     </div>
 
     <div class="col-md-3">
-        <div class="card shadow-sm text-center p-3">
-            <h6>Mejor cliente</h6>
-            <b>{{ mejor_cliente[0] if mejor_cliente else "-" }}</b>
+        <div class="card shadow-sm border-0">
+            <div class="card-body text-center">
+
+                <h6 class="text-muted mt-2">Ganancia Total</h6>
+
+                <h4 class="fw-bold text-success">
+                    S/ {{ ganancia_total }}
+                </h4>
+
+            </div>
         </div>
     </div>
 
@@ -89,11 +96,12 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-    const ventasLabels = {{ ventas_dia | map(attribute = 0) | list | tojson }};
-    const ventasData = {{ ventas_dia | map(attribute = 1) | list | tojson }};
+    const prodLabels = {{ top_productos | map(attribute=0) | list | tojson }};
+    const prodData   = {{ top_productos | map(attribute=1) | list | tojson }};
 
-    const prodLabels = {{ top_productos | map(attribute = 0) | list | tojson }};
-    const prodData = {{ top_productos | map(attribute = 1) | list | tojson }};
+    const ventasLabels = {{ ventas_labels | tojson }};
+    const ventasData   = {{ ventas_data | tojson }};
+    const gananciaData = {{ ganancia_data | tojson }};
 </script>
 
 <script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>

@@ -1742,17 +1742,6 @@ def dashboard():
      .first()
 
     # =========================
-    # 👤 MEJOR CLIENTE
-    # =========================
-    mejor_cliente = db.session.query(
-        Cliente.nombre,
-        func.sum(Venta.total).label("total")
-    ).join(Venta)\
-     .group_by(Cliente.nombre)\
-     .order_by(func.sum(Venta.total).desc())\
-     .first()
-
-    # =========================
     # 📈 VENTAS POR DÍA
     # =========================
     ventas_dia = db.session.query(
@@ -1762,14 +1751,46 @@ def dashboard():
 
     ventas_dia = [(fecha.strftime("%d/%m"), total) for fecha, total in ventas_dia]
 
+    # =========================
+    # 💵 GANANCIA TOTAL
+    # =========================
+    ganancia_total = db.session.query(
+        func.sum(
+            (DetalleVenta.precio - Producto.precio_compra) * DetalleVenta.cantidad
+        )
+    ).join(Producto, Producto.id == DetalleVenta.producto_id).scalar() or 0
+
+    ganancia_total = round(ganancia_total, 2)
+
+    # =========================
+    # 📈 VENTAS + GANANCIAS POR DÍA
+    # =========================
+    ventas_dia = db.session.query(
+        func.date(Venta.fecha).label("fecha"),
+        func.sum(DetalleVenta.subtotal).label("ventas"),
+        func.sum(
+            (DetalleVenta.precio - Producto.precio_compra) * DetalleVenta.cantidad
+        ).label("ganancia")
+    ).join(DetalleVenta, Venta.id == DetalleVenta.venta_id)\
+    .join(Producto, Producto.id == DetalleVenta.producto_id)\
+    .group_by(func.date(Venta.fecha))\
+    .order_by(func.date(Venta.fecha))\
+    .all()
+
+    ventas_labels = [f.strftime("%d/%m") for f, _, _ in ventas_dia]
+    ventas_data = [float(v or 0) for _, v, _ in ventas_dia]
+    ganancia_data = [float(g or 0) for _, _, g in ventas_dia]
+
     return render_template(
         "dashboard.html",
         total_ventas=total_ventas,
+        ganancia_total=ganancia_total,
         top_productos=top_productos,
         bajo_stock=bajo_stock,
         producto_estrella=producto_estrella,
-        mejor_cliente=mejor_cliente,
-        ventas_dia=ventas_dia
+        ventas_labels=ventas_labels,
+        ventas_data=ventas_data,
+        ganancia_data=ganancia_data
     )
 
 
