@@ -253,6 +253,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
         document.getElementById("alertaPago").style.display =
             pagado < total ? "block" : "none";
+
+        // 🔥 CONTROL BOTÓN
+        let btn = document.getElementById("btnRegistrar");
+
+        if (pagado >= total && total > 0) {
+            btn.style.display = "block";   // mostrar
+        } else {
+            btn.style.display = "none";    // ocultar
+        }
     }
 
     // =========================

@@ -63,29 +63,94 @@
         </tr>
 
         <!-- MODAL EDIT -->
-        <div class="modal fade" id="edit{{p.id}}">
-            <div class="modal-dialog">
+        <div class="modal fade" id="edit{{p.id}}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered"> <!-- Tamaño grande y centrado -->
                 <form method="POST" enctype="multipart/form-data" action="{{ url_for('productos_editar', id=p.id) }}">
+                    <div class="modal-content border-0 shadow">
 
-                    <div class="modal-content p-3">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Editar Producto</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        <div class="modal-header bg-light">
+                            <h5 class="modal-title d-flex align-items-center">
+                                <i class="bi bi-pencil-square me-2 text-primary"></i> Editar Producto
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <input name="nombre" value="{{p.nombre}}" class="form-control mb-2">
-                        <input name="codigo_barras" value="{{p.codigo_barras}}" class="form-control mb-2">
-                        <input name="categoria_id" value="{{p.categoria_id}}" class="form-control mb-2">
-                        <input name="precio_compra" value="{{p.precio_compra}}" class="form-control mb-2">
-                        <input name="precio_venta" value="{{p.precio_venta}}" class="form-control mb-2">
-                        <input name="stock" value="{{p.stock}}" class="form-control mb-2">
 
-                        <input type="file" name="imagen" class="form-control mb-2">
+                        <div class="modal-body p-4">
+                            <div class="row g-3"> <!-- Espaciado entre columnas -->
 
-                        <button class="btn btn-primary">Guardar</button>
+                                <!-- SECCIÓN INFORMACIÓN BÁSICA -->
+                                <div class="col-md-8">
+                                    <label class="form-label fw-semibold">Nombre del Producto</label>
+                                    <input name="nombre" value="{{p.nombre}}" class="form-control"
+                                        placeholder="Ej. Arroz Costeño 1kg" required>
+                                </div>
 
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">Código de Barras</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-upc-scan"></i></span>
+                                        <input name="codigo_barras" value="{{p.codigo_barras}}" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Categoría</label>
+                                    <select name="categoria_id" class="form-select border-primary-subtle">
+                                        {% for c in categorias %}
+                                        <option value="{{c.id}}" {% if c.id==p.categoria_id %}selected{% endif %}>
+                                            {{c.nombre}}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6 text-center border rounded p-2 bg-light">
+                                    <label class="form-label fw-semibold d-block">Imagen Actual</label>
+                                    <small class="text-muted">Selecciona una nueva para cambiar</small>
+                                    <input type="file" name="imagen" class="form-control form-control-sm mt-1">
+                                </div>
+
+                                <!-- SECCIÓN COSTOS Y STOCK -->
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold text-danger">Precio Compra</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" step="0.01" name="precio_compra"
+                                            value="{{p.precio_compra}}" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold text-success">Precio Venta</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">$</span>
+                                        <input type="number" step="0.01" name="precio_venta" value="{{p.precio_venta}}"
+                                            class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <label class="form-label fw-semibold">Stock Actual</label>
+                                    <input type="number" name="stock" value="{{p.stock}}"
+                                        class="form-control {% if p.stock <= 5 %}is-invalid{% endif %}">
+                                    {% if p.stock <= 5 %} <div class="invalid-feedback">¡Stock Crítico!
+                                </div>
+                                {% endif %}
+                            </div>
+
+                        </div>
                     </div>
-                </form>
+
+                    <div class="modal-footer bg-light">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary px-4 shadow-sm">
+                            <i class="bi bi-check-lg"></i> Actualizar Producto
+                        </button>
+                    </div>
+
             </div>
+            </form>
+        </div>
         </div>
 
         {% endfor %}
@@ -95,8 +160,9 @@
 <!-- NUEVO -->
 <div class="modal fade" id="modalNuevo" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered"> <!-- Centrado para mejor vista -->
-        <form method="POST" enctype="multipart/form-data" action="{{ url_for('productos_nuevo') }}" class="modal-content border-0 shadow">
-            
+        <form method="POST" enctype="multipart/form-data" action="{{ url_for('productos_nuevo') }}"
+            class="modal-content border-0 shadow">
+
             <div class="modal-header bg-light">
                 <h5 class="modal-title d-flex align-items-center">
                     <i class="bi bi-box-seam me-2 text-primary"></i> Nuevo Producto
@@ -106,7 +172,8 @@
 
             <div class="modal-body">
                 <!-- SECCIÓN ESCÁNER -->
-                <div class="mb-3 bg-dark rounded p-2 text-center position-relative overflow-hidden" style="min-height: 50px;">
+                <div class="mb-3 bg-dark rounded p-2 text-center position-relative overflow-hidden"
+                    style="min-height: 50px;">
                     <div id="reader" class="w-100"></div>
                     <div class="d-flex justify-content-center gap-2 mt-2">
                         <button type="button" class="btn btn-sm btn-outline-light" onclick="iniciarScanner()">
@@ -124,7 +191,8 @@
                     <label class="form-label small fw-bold text-muted">Código de Barras</label>
                     <div class="input-group">
                         <span class="input-group-text"><i class="bi bi-upc"></i></span>
-                        <input name="codigo_barras" id="codigo_barras" placeholder="Escriba o escanee..." class="form-control">
+                        <input name="codigo_barras" id="codigo_barras" placeholder="Escriba o escanee..."
+                            class="form-control">
                     </div>
                     <div id="mensajeProducto" class="form-text text-info"></div>
                 </div>
@@ -151,9 +219,9 @@
                     <select name="categoria_id" class="form-select">
                         <option value="">Seleccione categoría...</option>
                         {% for c in categorias %}
-                            {% if c.parent_id %}
-                            <option value="{{c.id}}">{{c.parent.nombre}} → {{c.nombre}}</option>
-                            {% endif %}
+                        {% if c.parent_id %}
+                        <option value="{{c.id}}">{{c.parent.nombre}} → {{c.nombre}}</option>
+                        {% endif %}
                         {% endfor %}
                     </select>
                 </div>
@@ -164,14 +232,16 @@
                         <label class="form-label small fw-bold text-muted text-truncate">P. Compra</label>
                         <div class="input-group">
                             <span class="input-group-text bg-light">$</span>
-                            <input name="precio_compra" type="number" step="0.01" class="form-control px-2" placeholder="0.00">
+                            <input name="precio_compra" type="number" step="0.01" class="form-control px-2"
+                                placeholder="0.00">
                         </div>
                     </div>
                     <div class="col-4">
                         <label class="form-label small fw-bold text-muted text-truncate">P. Venta</label>
                         <div class="input-group">
                             <span class="input-group-text bg-light">$</span>
-                            <input name="precio_venta" type="number" step="0.01" class="form-control px-2" placeholder="0.00">
+                            <input name="precio_venta" type="number" step="0.01" class="form-control px-2"
+                                placeholder="0.00">
                         </div>
                     </div>
                     <div class="col-4">
@@ -191,7 +261,8 @@
             </div>
 
             <div class="modal-footer bg-light border-top-0">
-                <button type="button" class="btn btn-link text-secondary text-decoration-none" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-link text-secondary text-decoration-none"
+                    data-bs-dismiss="modal">Cancelar</button>
                 <button type="submit" class="btn btn-success px-4">
                     <i class="bi bi-check-circle me-1"></i> Guardar Producto
                 </button>
